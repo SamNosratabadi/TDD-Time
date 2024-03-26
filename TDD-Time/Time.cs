@@ -1,61 +1,89 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace TDD_Time
 {
-    internal class Time
+    public struct Time
     {
-        public int Hour { get; private set; }
-        public int Minute { get; private set; }
-        public int Second { get; private set; }
+        public int Hours { get; set; }
+        public int Minutes { get; set; }
+        public int Seconds { get; set; }
 
-        public Time(int hour, int minute, int second)
+        public Time(int hours, int minutes, int seconds)
         {
-            
+            Hours = hours;
+            Minutes = minutes;
+            Seconds = seconds;
+        }
+        public static Time operator ++(Time t)
+        {
+            return t + 1;
         }
 
-
-        //Måste kunna kolla om tiden är "valid" eller ej. Dvs om värdena för timmarna är mellan [0,23], minuter och sekunder är mellan[0, 59].
-        public static void IsValid(int hour, int minute, int second)
+        public static Time operator --(Time t)
         {
-            if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59)
+            return t - 1;
+        }
+        public static Time operator +(Time t, int seconds)
+        {
+            int newSeconds = t.Seconds + seconds;
+            int newMinutes = t.Minutes + newSeconds / 60;
+            int newHours = t.Hours + newMinutes / 60;
+
+            newSeconds %= 60;
+            newMinutes %= 60;
+            newHours %= 24;
+
+            return new Time(newHours, newMinutes, newSeconds);
+        }
+
+        public static Time operator -(Time t, int seconds)
+        {
+            int newSeconds = t.Seconds - seconds;
+            int newMinutes = t.Minutes;
+            int newHours = t.Hours;
+
+            while (newSeconds < 0)
+            {
+                newSeconds += 60;
+                newMinutes--;
+            }
+
+            while (newMinutes < 0)
+            {
+                newMinutes += 60;
+                newHours--;
+            }
+
+            while (newHours < 0)
+            {
+                newHours += 24;
+            }
+
+            return new Time(newHours, newMinutes, newSeconds);
+        }
+        public static void IsValid(Time time)
+        {
+            if (time.Hours < 0 || time.Hours > 23 || time.Minutes < 0 || time.Minutes > 59 || time.Seconds < 0 || time.Seconds > 59)
             {
                 throw new ArgumentOutOfRangeException("Time is out of range");
             }
         }
-        public static string ToString(int hour, int minute, int second, bool format)
+        public string ToString(bool format)
         {
             if (format)
             {
-                return $"{hour:00}:{minute:00}:{second:00}";
+                
+                return $"{Hours:D2}:{Minutes:D2}:{Seconds:D2}";
             }
             else
             {
-                if (hour > 12)
-                {
-                    return $"{hour - 12:00}:{minute:00}:{second:00} PM";
-                }
-                else
-                {
-                    return $"{hour:00}:{minute:00}:{second:00} AM";
-                }
+                
+                string amPmDesignator = (Hours < 12) ? "am" : "pm";
+                int displayHours = (Hours == 0 || Hours == 12) ? 12 : Hours % 12;
+                return $"{displayHours:D2}:{Minutes:D2}:{Seconds:D2} {amPmDesignator}";
             }
         }
-
-        public static bool IsAm(int hour) //Det skall vara möjligt att kolla om det är förmiddag eller eftermiddag.
+        public bool IsAm()
         {
-            if (hour < 12)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            return Hours < 12;
         }
 
     }
