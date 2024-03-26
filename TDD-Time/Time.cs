@@ -121,7 +121,7 @@ namespace TDD_Time
         {
             if (time.Hours < 0 || time.Hours > MaxHours || time.Minutes < 0 || time.Minutes > MaxMinutes || time.Seconds < 0 || time.Seconds > MaxSeconds)
             {
-                throw new ArgumentOutOfRangeException("Time is out of range");
+                throw new ArgumentOutOfRangeException(nameof(time),"Time is out of range");
             }
         }
 
