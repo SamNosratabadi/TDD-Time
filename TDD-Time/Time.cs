@@ -12,15 +12,60 @@ namespace TDD_Time
             Minutes = minutes;
             Seconds = seconds;
         }
+
+        // Överskriver Equals-metoden för att jämföra två Time-objekt så att det inte blir några varningar i Visual Studio
+        public override bool Equals(object? obj)
+        {
+            if (obj is Time)
+            {
+                Time other = (Time)obj;
+                return Hours == other.Hours && Minutes == other.Minutes && Seconds == other.Seconds;
+            }
+            return false;
+        }
+
+        // Överskriver GetHashCode-metoden för att generera en hashkod för Time-objektet så att det inte blir några varningar i Visual Studio
+        public override int GetHashCode()
+        {
+            return Hours.GetHashCode() ^ Minutes.GetHashCode() ^ Seconds.GetHashCode();
+        }
+
+        
+        public static bool operator >(Time t1, Time t2)
+        {
+            return t1.Hours > t2.Hours || (t1.Hours == t2.Hours && t1.Minutes > t2.Minutes) || (t1.Hours == t2.Hours && t1.Minutes == t2.Minutes && t1.Seconds > t2.Seconds);
+        }
+
+        public static bool operator <(Time t1, Time t2)
+        {
+            return t1.Hours < t2.Hours || (t1.Hours == t2.Hours && t1.Minutes < t2.Minutes) || (t1.Hours == t2.Hours && t1.Minutes == t2.Minutes && t1.Seconds < t2.Seconds);
+        }
+
+        
+        public static bool operator ==(Time t1, Time t2)
+        {
+            return t1.Hours == t2.Hours && t1.Minutes == t2.Minutes && t1.Seconds == t2.Seconds;
+        }
+
+        
+        public static bool operator !=(Time t1, Time t2)
+        {
+            return !(t1 == t2);
+        }
+
+        
         public static Time operator ++(Time t)
         {
             return t + 1;
         }
 
+        
         public static Time operator --(Time t)
         {
             return t - 1;
         }
+
+        
         public static Time operator +(Time t, int seconds)
         {
             int newSeconds = t.Seconds + seconds;
@@ -34,6 +79,7 @@ namespace TDD_Time
             return new Time(newHours, newMinutes, newSeconds);
         }
 
+        
         public static Time operator -(Time t, int seconds)
         {
             int newSeconds = t.Seconds - seconds;
@@ -59,6 +105,8 @@ namespace TDD_Time
 
             return new Time(newHours, newMinutes, newSeconds);
         }
+
+        
         public static void IsValid(Time time)
         {
             if (time.Hours < 0 || time.Hours > 23 || time.Minutes < 0 || time.Minutes > 59 || time.Seconds < 0 || time.Seconds > 59)
@@ -66,25 +114,28 @@ namespace TDD_Time
                 throw new ArgumentOutOfRangeException("Time is out of range");
             }
         }
+
+        
         public string ToString(bool format)
         {
             if (format)
             {
-                
+                // Returnerar tiden i formatet HH:MM:SS
                 return $"{Hours:D2}:{Minutes:D2}:{Seconds:D2}";
             }
             else
             {
-                
+                // Returnerar tiden i formatet HH:MM:SS AM/PM
                 string amPmDesignator = (Hours < 12) ? "am" : "pm";
                 int displayHours = (Hours == 0 || Hours == 12) ? 12 : Hours % 12;
                 return $"{displayHours:D2}:{Minutes:D2}:{Seconds:D2} {amPmDesignator}";
             }
         }
+
+        
         public bool IsAm()
         {
             return Hours < 12;
         }
-
     }
 }
