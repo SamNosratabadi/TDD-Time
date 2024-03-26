@@ -12,6 +12,25 @@ namespace TDD_Time
             Minutes = minutes;
             Seconds = seconds;
         }
+        public static bool operator >(Time t1, Time t2)
+        {
+            return t1.Hours > t2.Hours || (t1.Hours == t2.Hours && t1.Minutes > t2.Minutes) || (t1.Hours == t2.Hours && t1.Minutes == t2.Minutes && t1.Seconds > t2.Seconds);
+        }
+
+        public static bool operator <(Time t1, Time t2)
+        {
+            return t1.Hours < t2.Hours || (t1.Hours == t2.Hours && t1.Minutes < t2.Minutes) || (t1.Hours == t2.Hours && t1.Minutes == t2.Minutes && t1.Seconds < t2.Seconds);
+        }
+
+        public static bool operator ==(Time t1, Time t2)
+        {
+            return t1.Hours == t2.Hours && t1.Minutes == t2.Minutes && t1.Seconds == t2.Seconds;
+        }
+
+        public static bool operator !=(Time t1, Time t2)
+        {
+            return !(t1 == t2);
+        }
         public static Time operator ++(Time t)
         {
             return t + 1;
@@ -85,6 +104,5 @@ namespace TDD_Time
         {
             return Hours < 12;
         }
-
     }
 }
